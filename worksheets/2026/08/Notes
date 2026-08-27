@@ -1,0 +1,35 @@
+# Two Sum
+
+## Problem
+Given an array and a target, find two numbers whose sum equals target.
+
+## Approach
+
+Use a `HashMap`.
+
+For every number:
+1. Calculate `target - nums[i]`
+2. Check if it exists in the map
+3. If yes, return the indices
+4. Otherwise store the current number
+
+## Code
+
+```java
+class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+
+        for (int i = 0; i < nums.length; i++) {
+            int need = target - nums[i];
+
+            if (map.containsKey(need)) {
+                return new int[]{map.get(need), i};
+            }
+
+            map.put(nums[i], i);
+        }
+
+        return new int[]{};
+    }
+}
