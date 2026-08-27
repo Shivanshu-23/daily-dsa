@@ -1,20 +1,28 @@
+Your Markdown has one main issue: **you need to close the Java code block before writing `Explanation`**, and use Markdown headings/lists for readability.
 
-# Example 
+Here is a clean GitHub-ready version:
 
-## Problem 1
-Given an array and a target, find two numbers whose sum equals target.
+````md
+# DSA Notes
 
-## Approach
+## Example
+
+### Problem 1: Two Sum
+
+Given an array and a target, find two numbers whose sum equals the target.
+
+### Approach
 
 Use a `HashMap`.
 
 For every number:
+
 1. Calculate `target - nums[i]`
 2. Check if it exists in the map
 3. If yes, return the indices
-4. Otherwise store the current number
+4. Otherwise, store the current number in the map
 
-## Code
+### Code
 
 ```java
 class Solution {
@@ -34,29 +42,57 @@ class Solution {
         return new int[]{};
     }
 }
+````
 
-# 1 String Cleaning
+---
+
+# 1. String Cleaning
+
+### Code
 
 ```java
 s = s.toLowerCase().replaceAll("[^a-z0-9]", "");
-Explanation
-toLowerCase() → Converts all characters to lowercase.
-replaceAll("[^a-z0-9]", "") → Removes all characters except lowercase letters and numbers.
-"" → Replaces the matched characters with nothing.
-Example
+```
+
+### Explanation
+
+* `toLowerCase()` → Converts all characters to lowercase.
+* `replaceAll("[^a-z0-9]", "")` → Removes all characters except lowercase letters and numbers.
+* `""` → Replaces the matched characters with nothing.
+
+### Example
+
+```java
 String s = "A man, a plan! 123";
+
 s = s.toLowerCase().replaceAll("[^a-z0-9]", "");
 
 System.out.println(s);
+```
 
-Output:
+### Output
 
+```text
 amanaplan123
-Regex
+```
 
+### Regex
+
+```text
 [^a-z0-9]
+```
 
-a-z → lowercase letters
-0-9 → digits
-^ → NOT
-Therefore, it matches anything that is not a letter or digit.
+* `a-z` → lowercase letters
+* `0-9` → digits
+* `^` → NOT
+
+Therefore, `[^a-z0-9]` matches **anything that is not a lowercase letter or digit**.
+
+### Quick Memory Trick
+
+```text
+[^a-z0-9] = Remove everything except a-z and 0-9
+```
+
+```
+```
