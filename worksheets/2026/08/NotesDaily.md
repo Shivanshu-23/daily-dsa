@@ -1,7 +1,7 @@
 
-# Two Sum
+# Example 
 
-## Problem
+## Problem 1
 Given an array and a target, find two numbers whose sum equals target.
 
 ## Approach
@@ -34,3 +34,29 @@ class Solution {
         return new int[]{};
     }
 }
+
+# 1 String Cleaning
+
+```java
+s = s.toLowerCase().replaceAll("[^a-z0-9]", "");
+Explanation
+toLowerCase() → Converts all characters to lowercase.
+replaceAll("[^a-z0-9]", "") → Removes all characters except lowercase letters and numbers.
+"" → Replaces the matched characters with nothing.
+Example
+String s = "A man, a plan! 123";
+s = s.toLowerCase().replaceAll("[^a-z0-9]", "");
+
+System.out.println(s);
+
+Output:
+
+amanaplan123
+Regex
+
+[^a-z0-9]
+
+a-z → lowercase letters
+0-9 → digits
+^ → NOT
+Therefore, it matches anything that is not a letter or digit.
