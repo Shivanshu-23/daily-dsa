@@ -1,110 +1,720 @@
-Absolutely. I’d add the **in-place vs extra-array learning** as a reusable DSA note, because this is a pattern you’ll see again and again.
-
-Here’s your updated Markdown section:
-
-````md
 # DSA Notes
 
-## Example
+# P01 - Two Pointers: Opposite Ends
 
-### Problem 1: Two Sum
-
-Given an array and a target, find two numbers whose sum equals the target.
-
-### Approach
-
-Use a `HashMap`.
-
-For every number:
-
-1. Calculate `target - nums[i]`
-2. Check if it exists in the map
-3. If yes, return the indices
-4. Otherwise, store the current number in the map
-
-### Code
-
-```java
-class Solution {
-    public int[] twoSum(int[] nums, int target) {
-        HashMap<Integer, Integer> map = new HashMap<>();
-
-        for (int i = 0; i < nums.length; i++) {
-            int need = target - nums[i];
-
-            if (map.containsKey(need)) {
-                return new int[]{map.get(need), i};
-            }
-
-            map.put(nums[i], i);
-        }
-
-        return new int[]{};
-    }
-}
-```
+> **Pattern:** Sorted array/string + pair/triplet condition.
+>
+> Use two pointers from opposite ends to reduce the search space.
 
 ---
 
-# 1. String Cleaning
+# 1. Valid Palindrome
 
-### Code
+## String Cleaning
 
 ```java
 s = s.toLowerCase().replaceAll("[^a-z0-9]", "");
 ```
 
-### Explanation
-
-* `toLowerCase()` → Converts all characters to lowercase.
-* `replaceAll("[^a-z0-9]", "")` → Removes all characters except lowercase letters and numbers.
-* `""` → Replaces the matched characters with nothing.
-
-### Example
-
-```java
-String s = "A man, a plan! 123";
-
-s = s.toLowerCase().replaceAll("[^a-z0-9]", "");
-
-System.out.println(s);
-```
-
-### Output
+### Remember
 
 ```text
-amanaplan123
+toLowerCase() → convert to lowercase
+
+[^a-z0-9] → NOT a-z or 0-9
+
+replaceAll(..., "") → remove
 ```
 
 ### Regex
 
 ```text
-[^a-z0-9]
+[a-z]   → lowercase letters
+[0-9]   → digits
+^       → NOT when inside [ ]
+""      → replace with nothing
 ```
 
-* `a-z` → lowercase letters
-* `0-9` → digits
-* `^` → NOT
-
-Therefore, `[^a-z0-9]` matches **anything that is not a lowercase letter or digit**.
-
-### Quick Memory Trick
+### Example
 
 ```text
-[^a-z0-9] = Remove everything except a-z and 0-9
+"A man, a plan!"
+        ↓
+"a man, a plan!"
+        ↓
+"amanaplan"
+```
+
+### Two Pointer
+
+```text
+l → left
+r → right
+```
+
+Compare:
+
+```text
+s.charAt(l)
+s.charAt(r)
+```
+
+Then:
+
+```text
+same       → l++, r--
+different  → not palindrome
+```
+
+### Core Pattern
+
+```text
+Clean string
+     ↓
+l = 0
+r = n - 1
+     ↓
+Compare both ends
+     ↓
+Move inward
 ```
 
 ---
 
-# 2. Big-O: n log n
+# 2. Squares of a Sorted Array
 
-## What does log₂(n) mean?
+## Key Observation
+
+The array is sorted, but negative numbers can become large after squaring.
+
+Example:
 
 ```text
-log₂(n) = How many times can I divide n by 2 before reaching approximately 1?
+[-7, -3, 2, 3, 11]
+ ↑             ↑
+ 49            121
 ```
 
-Mathematically:
+Therefore, the largest square can only come from:
+
+```text
+leftmost element
+        OR
+rightmost element
+```
+
+---
+
+## Two Pointers
+
+```java
+int ls = nums[l] * nums[l];
+int rs = nums[r] * nums[r];
+```
+
+Compare:
+
+```text
+ls > rs
+   ↓
+put ls at the end
+   ↓
+l++
+```
+
+Otherwise:
+
+```text
+rs >= ls
+   ↓
+put rs at the end
+   ↓
+r--
+```
+
+---
+
+## Why Fill From the End?
+
+We find the **largest square first**.
+
+Therefore:
+
+```text
+largest      → last position
+2nd largest  → second-last
+3rd largest  → third-last
+```
+
+Use:
+
+```java
+p = n - 1;
+```
+
+Then:
+
+```java
+p--;
+```
+
+---
+
+# Why `l <= r`?
+
+Ask:
+
+> **Do I need to process the case where `l == r`?**
+
+YES.
+
+When:
+
+```text
+l == r
+```
+
+there is still **one element remaining**.
+
+That element must be processed.
+
+Therefore:
+
+```java
+while (l <= r)
+```
+
+---
+
+## `l < r` vs `l <= r`
+
+### `l <= r`
+
+Use when the last remaining element needs to be processed.
+
+```text
+l < r   → multiple elements
+l == r  → one element remaining
+```
+
+Example:
+
+```text
+Sorted Squares
+```
+
+Therefore:
+
+```java
+while (l <= r)
+```
+
+---
+
+### `l < r`
+
+Use when the meeting point does NOT need to be processed.
+
+Usually pair problems.
+
+Example:
+
+```text
+Two Sum II
+```
+
+When:
+
+```text
+l == r
+```
+
+there are not two different elements left to form a pair.
+
+Therefore:
+
+```java
+while (l < r)
+```
+
+---
+
+## Quick Decision Rule
+
+```text
+Do I need to process l == r?
+
+YES → l <= r
+
+NO  → l < r
+```
+
+### Memory Trick
+
+```text
+l <= r → process last element
+l < r  → stop when pointers meet
+```
+
+---
+
+# In-Place vs Extra Array
+
+When solving an array problem, ask:
+
+> **What am I reading and what am I writing?**
+
+If reading:
+
+```java
+nums[l]
+nums[r]
+```
+
+and writing:
+
+```java
+nums[p]
+```
+
+ask:
+
+> **Can my write overwrite a value that I still need to read?**
+
+If YES:
+
+```text
+Use a separate array
+```
+
+Example:
+
+```java
+int[] ans = new int[nums.length];
+```
+
+---
+
+## Memory Trick
+
+```text
+READ  → What information do I still need?
+
+WRITE → What information am I destroying?
+```
+
+### Problem-Solving Order
+
+```text
+Correct solution
+      ↓
+Analyze complexity
+      ↓
+Optimize
+```
+
+Don't try to force `O(1)` space before proving that the in-place solution is safe.
+
+---
+
+# 3. Two Sum II - Input Array Is Sorted
+
+## Key Observation
+
+The array is already sorted.
+
+Use:
+
+```text
+l → beginning
+r → end
+```
+
+Calculate:
+
+```java
+sum = nums[l] + nums[r];
+```
+
+---
+
+## Pointer Movement
+
+### `sum == target`
+
+Found the answer:
+
+```java
+if (sum == target) {
+    return new int[]{l + 1, r + 1};
+}
+```
+
+### Why `l + 1` and `r + 1`?
+
+Java uses:
+
+```text
+0-based indexing
+```
+
+But the problem may ask for:
+
+```text
+1-based indexing
+```
+
+Therefore:
+
+```text
+Java index → Problem position
+
+l → l + 1
+r → r + 1
+```
+
+---
+
+## `sum < target`
+
+Need a **larger sum**.
+
+Since the array is sorted:
+
+```text
+move l right
+```
+
+```java
+l++;
+```
+
+---
+
+## `sum > target`
+
+Need a **smaller sum**.
+
+Move `r` left:
+
+```java
+r--;
+```
+
+---
+
+## Memory Trick
+
+```text
+sum < target → l++
+
+sum > target → r--
+
+sum == target → answer
+```
+
+---
+
+# 4. 3Sum
+
+## Key Idea
+
+Sort the array first.
+
+Then:
+
+```text
+Fix one element
+      ↓
+Use two pointers for the remaining elements
+```
+
+Pattern:
+
+```text
+Sort
+ ↓
+Fix i
+ ↓
+l = i + 1
+r = n - 1
+ ↓
+Check nums[i] + nums[l] + nums[r]
+```
+
+---
+
+# Why Sort First?
+
+Example:
+
+```text
+[-1, 0, 1, 2, -1, -4]
+```
+
+After sorting:
+
+```text
+[-4, -1, -1, 0, 1, 2]
+```
+
+Sorting gives us two important benefits:
+
+```text
+1. Two-pointer movement becomes possible
+2. Duplicate values become adjacent
+```
+
+---
+
+# 3Sum Pointer Movement
+
+Calculate:
+
+```java
+sum = nums[i] + nums[l] + nums[r];
+```
+
+### `sum < 0`
+
+Need a larger sum:
+
+```java
+l++;
+```
+
+### `sum > 0`
+
+Need a smaller sum:
+
+```java
+r--;
+```
+
+### `sum == 0`
+
+Found a valid triplet:
+
+```java
+ls.add(Arrays.asList(nums[i], nums[l], nums[r]));
+```
+
+Then:
+
+```java
+l++;
+r--;
+```
+
+---
+
+# Why Move Both `l` and `r`?
+
+After:
+
+```text
+nums[i] + nums[l] + nums[r] == 0
+```
+
+the current `l` and `r` values have already been used.
+
+So move both:
+
+```text
+l → next
+r → previous
+```
+
+```java
+l++;
+r--;
+```
+
+Then skip duplicates.
+
+---
+
+# Skip Duplicate `i`
+
+```java
+if (i > 0 && nums[i - 1] == nums[i])
+    continue;
+```
+
+### Why?
+
+After sorting, duplicate values are next to each other.
+
+Example:
+
+```text
+[-4, -1, -1, 0, 1, 2]
+      ↑   ↑
+      same value
+```
+
+Using both `-1`s as the starting value can generate the same triplet.
+
+Therefore:
+
+```text
+duplicate nums[i]
+       ↓
+     skip
+```
+
+### Memory Trick
+
+```java
+if (i > 0 && nums[i] == nums[i - 1])
+    continue;
+```
+
+---
+
+# Add Triplet
+
+```java
+ls.add(Arrays.asList(nums[i], nums[l], nums[r]));
+```
+
+### Remember
+
+```text
+Arrays.asList(a, b, c)
+        ↓
+Creates a List containing a, b, c
+```
+
+So:
+
+```java
+ls.add(Arrays.asList(nums[i], nums[l], nums[r]));
+```
+
+means:
+
+```text
+Add the current triplet to the result.
+```
+
+---
+
+# Skip Duplicate `l`
+
+```java
+while (l < r && nums[l] == nums[l - 1])
+    l++;
+```
+
+### Why?
+
+After finding a valid triplet, the next `l` value may be the same.
+
+Example:
+
+```text
+[-2, 0, 0, 0, 2]
+     ↑  ↑
+     l  duplicate
+```
+
+We don't want to generate the same triplet again.
+
+Therefore:
+
+```text
+duplicate nums[l]
+       ↓
+     l++
+```
+
+---
+
+# Skip Duplicate `r`
+
+```java
+while (l < r && nums[r] == nums[r + 1])
+    r--;
+```
+
+Same idea for the right pointer.
+
+```text
+duplicate nums[r]
+       ↓
+     r--
+```
+
+---
+
+# 3Sum Duplicate Rule
+
+There are **3 places** where duplicates matter:
+
+```text
+1. i → skip duplicate starting values
+
+if (i > 0 && nums[i] == nums[i - 1])
+    continue;
+
+
+2. l → skip duplicate left values
+
+while (l < r && nums[l] == nums[l - 1])
+    l++;
+
+
+3. r → skip duplicate right values
+
+while (l < r && nums[r] == nums[r + 1])
+    r--;
+```
+
+### Easy Memory
+
+```text
+i → duplicate? SKIP
+
+l → duplicate? MOVE RIGHT
+
+r → duplicate? MOVE LEFT
+```
+
+---
+
+# 3Sum Core Pattern
+
+```text
+SORT
+ ↓
+FIX i
+ ↓
+l = i + 1
+r = n - 1
+ ↓
+Calculate sum
+ ↓
+sum < 0 → l++
+sum > 0 → r--
+sum = 0 → save + l++ + r--
+ ↓
+Skip duplicates
+```
+
+---
+
+# 5. Big-O: `log₂(n)`
+
+## What Does `log₂(n)` Mean?
+
+Think:
+
+```text
+log₂(n) = How many times can I divide n by 2?
+```
+
+More precisely:
 
 ```text
 log₂(n) = x
@@ -116,70 +726,74 @@ means:
 2ˣ = n
 ```
 
-### Example
+---
 
-For:
+## Example: `10⁵`
 
 ```text
-n = 10,000 = 10⁴
+n = 10⁵
+  = 100,000
 ```
 
 We want:
 
 ```text
-log₂(10,000)
+log₂(100,000)
 ```
 
-Using the change-of-base formula:
+Using change of base:
 
 ```text
-log₂(10,000) = log₁₀(10,000) / log₁₀(2)
+log₂(100,000)
+= log₁₀(100,000) / log₁₀(2)
 ```
 
 We know:
 
 ```text
-log₁₀(10,000) = 4
+log₁₀(100,000) = 5
+
 log₁₀(2) ≈ 0.30103
 ```
 
 Therefore:
 
 ```text
-log₂(10,000)
-= 4 / 0.30103
-≈ 13.29
+5 / 0.30103
+≈ 16.61
 ```
 
 So:
 
 ```text
-log₂(10⁴) ≈ 13.29
+log₂(10⁵) ≈ 16.61
 ```
 
-### n log₂(n)
+---
+
+# `n log n`
 
 For:
 
 ```text
-n = 10⁴ = 10,000
+n = 10⁵
 ```
 
 ```text
 n log₂(n)
-= 10,000 × 13.29
-≈ 132,877
+= 100,000 × 16.61
+≈ 1,660,964
 ```
 
 Therefore:
 
 ```text
-O(n log n) ≈ 132,877 operations
+O(n log n) ≈ 1.66 million operations
 ```
 
 ---
 
-## Important n log n Values
+# Important `n log n` Values
 
 | n | log₂(n) | n log₂(n) |
 |---:|---:|---:|
@@ -189,24 +803,22 @@ O(n log n) ≈ 132,877 operations
 | 10⁵ = 100,000 | ~16.61 | ~1,660,964 |
 | 10⁶ = 1,000,000 | ~19.93 | ~19,931,569 |
 
-### DSA Shortcut
-
-Memorize:
+### Memorize These
 
 ```text
-10³ → n log n ≈ 10K
-10⁴ → n log n ≈ 133K
-10⁵ → n log n ≈ 1.66M
-10⁶ → n log n ≈ 20M
+10³ → ~10K
+10⁴ → ~133K
+10⁵ → ~1.66M
+10⁶ → ~20M
 ```
 
 ---
 
-# 3. Constraint → Complexity
+# Constraint → Complexity
 
-A useful interview rule of thumb:
+Useful interview rule of thumb:
 
-| n | Usually consider |
+| n | Usually Consider |
 |---:|---|
 | n ≤ 10 | O(n!), O(2ⁿ), O(n³) |
 | n ≤ 20 | O(2ⁿ) |
@@ -215,11 +827,13 @@ A useful interview rule of thumb:
 | n ≤ 10,000 | O(n²) may work |
 | n ≤ 100,000 | O(n log n) / O(n) |
 | n ≤ 1,000,000 | O(n log n) / O(n) |
-| n ≥ 10⁷ | Usually aim for O(n) or better |
+| n ≥ 10⁷ | Usually O(n) or better |
 
-These are guidelines, not strict rules. Actual performance depends on the language, time limit, and operations.
+> These are guidelines, not strict rules. Actual performance depends on the language, time limit, and operations.
 
-### Quick Interview Thinking
+---
+
+# Quick Complexity Thinking
 
 If:
 
@@ -238,305 +852,145 @@ O(n²)      ❌ Usually too slow
 O(2ⁿ)      💀
 ```
 
----
-
-# 4. Sorted Squares: Two Pointers
-
-### Problem
-
-Given a sorted array, return the squares of each number in sorted order.
-
-Example:
+If:
 
 ```text
-Input:
-[-7, -3, 2, 3, 11]
-
-Output:
-[4, 9, 9, 49, 121]
+n = 10³
 ```
 
-### Key Observation
-
-The array is already sorted.
-
-The largest square can only come from:
+Think:
 
 ```text
-Leftmost element
-        OR
-Rightmost element
-```
-
-For example:
-
-```text
-[-7, -3, 2, 3, 11]
- ↑             ↑
-largest        largest
-negative       positive
-absolute       absolute
-value          value
-```
-
-Compare:
-
-```java
-int ls = nums[l] * nums[l];
-int rs = nums[r] * nums[r];
-```
-
-Put the larger square at the **end** of the result.
-
----
-
-## Why Use a New Array?
-
-When solving an array problem, always ask:
-
-> What am I reading and what am I writing?
-
-Here we read:
-
-```java
-nums[l]
-nums[r]
-```
-
-and write:
-
-```java
-ans[p]
-```
-
-Using a separate array keeps the input unchanged:
-
-```text
-INPUT
-[-7, -3, 2, 3, 11]
-       ↓
-       ↓ read
-       ↓
-OUTPUT
-[4, 9, 9, 49, 121]
-```
-
-### Why not immediately modify nums?
-
-If we write directly into `nums`:
-
-```java
-nums[p] = value;
-```
-
-we may overwrite a value that `l` or `r` still needs to read.
-
-This creates a very important rule:
-
-```text
-Before modifying an array in-place, ask:
-
-"Will my write overwrite data that I still need?"
-```
-
-If YES:
-
-```text
-Use a separate array
-```
-
-If NO:
-
-```text
-In-place modification may be possible
+O(n)       ✅
+O(n log n) ✅
+O(n²)      ✅ ~1,000,000
+O(n³)      ⚠️ ~1,000,000,000
 ```
 
 ---
 
-## Correct Solution
+# 6. General Two Pointer Decision Rules
 
-```java
-class Solution {
-    public int[] sortedSquares(int[] nums) {
-        int n = nums.length;
-        int[] ans = new int[n];
-
-        int l = 0;
-        int r = n - 1;
-        int p = n - 1;
-
-        while (l <= r) {
-            int ls = nums[l] * nums[l];
-            int rs = nums[r] * nums[r];
-
-            if (ls > rs) {
-                ans[p] = ls;
-                l++;
-            } else {
-                ans[p] = rs;
-                r--;
-            }
-
-            p--;
-        }
-
-        return ans;
-    }
-}
-```
-
-### Complexity
+When you see a problem, ask:
 
 ```text
-Time:  O(n)
-Space: O(n)
-```
-
-We do not need:
-
-```text
-O(n log n)
-```
-
-because we don't sort the array.
-
----
-
-# 5. Problem-Solving Rule: Correct → Analyze → Optimize
-
-Don't try to find the most optimized solution immediately.
-
-Follow this order:
-
-```text
-1. Find a correct solution
+1. Is the array/string sorted?
         ↓
-2. Analyze Time Complexity
-        ↓
-3. Analyze Space Complexity
-        ↓
-4. Look for optimization
-```
+   Think Two Pointers
 
-For Sorted Squares:
-
-```text
-Brute Force
-Square everything
+2. Can I start from opposite ends?
         ↓
-Sort
+   l = 0
+   r = n - 1
+
+3. What does the condition tell me?
         ↓
-O(n log n)
+   Decide which pointer to move
 
-
-Better
-Two pointers
+4. Do I need to process l == r?
         ↓
-O(n)
+   YES → l <= r
+   NO  → l < r
 
-
-Space optimization?
+5. Am I modifying the input?
         ↓
-Ask whether in-place modification is safe
+   Could I overwrite unread data?
+        ↓
+   YES → consider a separate array
 ```
 
 ---
 
-# 6. Important In-Place Array Learning
+# 7. General DSA Problem-Solving Mindset
 
-Whenever you see:
-
-```java
-nums[index] = value;
-```
-
-while also reading from `nums`, stop and ask:
-
-### Question 1
-
-```text
-What values do I still need to read?
-```
-
-### Question 2
-
-```text
-Where am I writing?
-```
-
-### Question 3
-
-```text
-Can my write position overwrite an unread value?
-```
-
-If the answer to Question 3 is YES, don't modify the array blindly.
-
-Use:
-
-```java
-int[] ans = new int[nums.length];
-```
-
-unless you can prove an in-place strategy is safe.
-
-### Memory Trick
-
-```text
-READ → What information do I still need?
-WRITE → What information am I destroying?
-```
-
-This is useful for:
-
-* Two pointers
-* Sliding window
-* Array rotation
-* Removing duplicates
-* Merging arrays
-* Partitioning
-* In-place sorting
-* Matrix problems
-
----
-
-# 7. General DSA Mindset
-
-When you get stuck, don't immediately look for code.
-
-Ask:
+When stuck, ask:
 
 ```text
 1. What is the input?
+
 2. What is the output?
+
 3. Is the input sorted?
+
 4. Can I use two pointers?
-5. Can I use a HashMap/HashSet?
+
+5. Can I use HashMap / HashSet?
+
 6. Can I avoid nested loops?
+
 7. What information do I need to remember?
+
 8. Am I overwriting information I still need?
+
 9. What is the Time Complexity?
+
 10. What is the Space Complexity?
 ```
 
-### Most Important Principle
+---
+
+# Most Important Rules to Remember
+
+## Two Pointers
 
 ```text
-Correctness first.
-Optimization second.
+Sorted array → Think Two Pointers
 ```
 
-A clean:
+## Pointer Movement
 
 ```text
-O(n) Time + O(n) Space
+sum < target → l++
+
+sum > target → r--
+
+sum == target → answer
 ```
 
-solution is usually much better than a complicated:
+## Loop Condition
 
 ```text
-O(n) Time + O(1) Space
+Need to process l == r → l <= r
+
+Don't need l == r → l < r
 ```
 
-solution that you cannot prove is correct.
-````
+## Duplicates in 3Sum
+
+```text
+i → skip duplicate
+
+l → skip duplicate by l++
+
+r → skip duplicate by r--
+```
+
+## In-Place Modification
+
+```text
+READ → What do I still need?
+
+WRITE → What am I destroying?
+```
+
+## Complexity
+
+```text
+10³ → O(n²) may work
+
+10⁵ → O(n) / O(n log n)
+
+10⁶ → O(n) preferred
+```
+
+## Core Principle
+
+```text
+Correctness first
+       ↓
+Analyze
+       ↓
+Optimize
+```
+
+> A simple correct `O(n)` + `O(n)` space solution is better than a complicated `O(n)` + `O(1)` solution that you cannot prove is correct.
