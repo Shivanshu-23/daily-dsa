@@ -701,7 +701,66 @@ sum = 0 → save + l++ + r--
  ↓
 Skip duplicates
 ```
+# 5. Container With Most Water
 
+### Formula
+
+```java
+int area = Math.min(height[l], height[r]) * (r - l);
+maxArea = Math.max(maxArea, area);
+```
+
+### Two Pointer Rule
+
+```text
+l = 0
+r = n - 1
+```
+
+```text
+height[l] < height[r] → l++
+
+height[l] >= height[r] → r--
+```
+
+### Key Learning
+
+```text
+Area = shorter height × width
+```
+
+**Always move the shorter pointer** because the shorter wall limits the water.
+
+### Loop
+
+```java
+while (l < r)
+```
+
+Why?
+
+```text
+l == r → only one wall remains → no container
+```
+
+### Complexity
+
+```text
+Time  → O(n)
+Space → O(1)
+```
+
+### Memory Trick
+
+```text
+Maximum width
+     ↓
+Calculate area
+     ↓
+Move shorter wall
+     ↓
+Repeat
+```
 ---
 
 # 5. Big-O: `log₂(n)`
